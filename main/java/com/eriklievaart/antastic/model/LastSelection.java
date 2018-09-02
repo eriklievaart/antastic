@@ -1,24 +1,21 @@
 package com.eriklievaart.antastic.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.toolkit.io.api.PropertiesIO;
+import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.lang.api.FormattedException;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
-import com.eriklievaart.toolkit.logging.api.LogTemplate;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class LastSelection {
 	private static final String WORKING_SET_KEY = "workingset";
-
-	private LogTemplate log = new LogTemplate(getClass());
 
 	@Inject
 	private AntasticConfig config;
@@ -104,7 +101,7 @@ public class LastSelection {
 	private void save() {
 		try {
 			PropertiesIO.storeStrings(data, ApplicationPaths.getLastSelectionFile());
-		} catch (IOException e) {
+		} catch (RuntimeIOException e) {
 			throw new FormattedException("Unable to store selection data", e);
 		}
 	}
@@ -114,11 +111,7 @@ public class LastSelection {
 		if (!file.isFile()) {
 			return;
 		}
-		try {
-			data = PropertiesIO.loadStrings(file);
-		} catch (IOException e) {
-			log.warn("unable to read file $", e, file);
-		}
+		data = PropertiesIO.loadStrings(file);
 	}
 
 }

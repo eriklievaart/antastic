@@ -109,7 +109,7 @@ public class AntasticConfig {
 			if (propertyFile.isFile()) {
 				try {
 					fl.setProperties(PropertiesIO.loadStrings(propertyFile));
-				} catch (IOException e) {
+				} catch (RuntimeIOException e) {
 					throw new FormattedException("unable to read $ (FileLocation[$])", propertyFile, fl.getName());
 				}
 			} else {
