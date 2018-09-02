@@ -41,8 +41,7 @@ public class AntasticConfig {
 	}
 
 	private void load() throws IOException {
-		//		File file = ApplicationPaths.getAntasticConfigFile();
-		File file = new File("/home/erikl/Applications/antastic/data/antastic.ini");
+		File file = ApplicationPaths.getAntasticConfigFile();
 		if (file.isFile()) {
 			for (IniNode child : IniNodeIO.read(file)) {
 				configRoot.addChild(child);
