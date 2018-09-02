@@ -3,6 +3,7 @@ package com.eriklievaart.antastic.boot;
 import java.io.File;
 import java.util.List;
 
+import com.eriklievaart.antastic.ant.AntScheduler;
 import com.eriklievaart.antastic.ant.AntScriptRunner;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.ui.main.MainController;
@@ -17,6 +18,8 @@ public class Main {
 	public static void main(String[] args) throws Exception {
 		if (args.length > 0) {
 			runScripts(args);
+			AntScheduler.shutdownOnComplete();
+
 		} else {
 			runGui();
 		}
