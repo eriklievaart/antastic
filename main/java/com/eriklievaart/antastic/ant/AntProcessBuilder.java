@@ -48,6 +48,9 @@ public class AntProcessBuilder {
 		try {
 			Check.isTrue(isAntAvailable(), "Ant home dir not set!");
 			log.info("runnning target: $ of build file $ for project $ ", target, buildFile.getFile(), projectRootDir);
+            if(!projectRootDir.exists()) {
+                projectRootDir.mkdirs();
+            }
 
 			ProcessBuilder builder = new ProcessBuilder(createCommandLineArguments(target));
 			builder.directory(new File(projectRootDir.getAbsolutePath()));
