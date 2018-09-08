@@ -8,7 +8,7 @@ From this metadata it extracts which projects exist and how they are grouped tog
 The metadata also contains a single build file which can be used to build all the projects.
 Building a project is then a simple matter of selecting it and double clicking the appropriate target.
 
-When invoking antastic, pass a list of files that antastic must run in headless mode.
+It is also possible to run antastic in headless mode. When running headless, pass a list of files to run.
 The files must exist and must be valid antastic script files.
 Antastic can be invoked without any arguments and then the gui will be started.
 
