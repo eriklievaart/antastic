@@ -95,7 +95,7 @@ public class ScriptController {
 			}
 		} catch (RuntimeIOException ignore) {
 		}
-		return "# [property]=[value]\n[project] [target]\n\n\n";
+		return "# [property]=[value]\n# [project] [target]\n\n\n";
 	}
 
 	private void storeScript() {
