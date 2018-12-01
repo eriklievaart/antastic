@@ -9,11 +9,9 @@ import java.util.stream.Collectors;
 
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.antastic.model.Group;
-import com.eriklievaart.toolkit.io.api.PropertiesIO;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.io.api.ini.IniNode;
 import com.eriklievaart.toolkit.io.api.ini.IniNodeIO;
-import com.eriklievaart.toolkit.lang.api.FormattedException;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.collection.SetTool;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
@@ -78,7 +76,7 @@ public class AntasticConfig {
 		}
 		IniNode node = new IniNode(PROJECT_NODE);
 		node.setProperty(NAME_PROPERTY, file.getName());
-		node.setProperty(FILE_PROPERTY, file.getFile().getAbsolutePath());
+		node.setProperty(FILE_PROPERTY, file.getRoot().getAbsolutePath());
 		configRoot.addChild(node);
 		save();
 	}
@@ -101,21 +99,14 @@ public class AntasticConfig {
 	}
 
 	private ProjectLocation toFileLocation(IniNode node) {
-		ProjectLocation fl = new ProjectLocation(node.getProperty(NAME_PROPERTY),
-				new File(node.getProperty(FILE_PROPERTY)));
+		String project = node.getProperty(NAME_PROPERTY);
+		File root = new File(node.getProperty(FILE_PROPERTY));
+		ProjectLocation pl = new ProjectLocation(project, root);
+
 		if (node.hasProperty(ANT_CONFIG_FILE_PROPERTY)) {
-			File propertyFile = new File(node.getProperty(ANT_CONFIG_FILE_PROPERTY));
-			if (propertyFile.isFile()) {
-				try {
-					fl.setProperties(PropertiesIO.loadStrings(propertyFile));
-				} catch (RuntimeIOException e) {
-					throw new FormattedException("unable to read $ (FileLocation[$])", propertyFile, fl.getName());
-				}
-			} else {
-				log.warn("Unable to read property file $ for project %", propertyFile, fl.getName());
-			}
+			pl.setPropertyFile(new File(node.getProperty(ANT_CONFIG_FILE_PROPERTY)));
 		}
-		return fl;
+		return pl;
 	}
 
 	private static Group toGroup(IniNode node) {

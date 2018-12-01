@@ -19,7 +19,7 @@ public class WorkspaceProject implements Comparable<WorkspaceProject> {
 	}
 
 	public File getRoot() {
-		return location.getFile();
+		return location.getRoot();
 	}
 
 	public ProjectLocation getFileLocation() {

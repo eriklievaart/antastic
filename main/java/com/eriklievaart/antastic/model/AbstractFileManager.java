@@ -70,7 +70,7 @@ public abstract class AbstractFileManager {
 		List<IniNode> nodes = files.stream().map(location -> {
 			IniNode node = new IniNode(NODE_NAME);
 			node.setProperty(NAME_PROPERTY, location.getName());
-			node.setProperty(FILE_PROPERTY, location.getFile().getAbsolutePath());
+			node.setProperty(FILE_PROPERTY, location.getRoot().getAbsolutePath());
 			return node;
 
 		}).collect(Collectors.toList());
