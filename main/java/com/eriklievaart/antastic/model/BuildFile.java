@@ -53,6 +53,7 @@ public class BuildFile implements Comparable<BuildFile> {
 		if (project == null) {
 			return new String[] {};
 		}
+		log.trace("% targets:", project.getName());
 		for (IniNode node : filters) {
 			if (hasAllRequiredProperties(project, node)) {
 				for (String target : node.getProperty(TARGET_PROPERTY).split("\\s*+,\\s*+")) {
