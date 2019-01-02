@@ -101,5 +101,4 @@ public class AntScriptRunner {
 		log.info(info);
 		log.info(hashes);
 	}
-
 }

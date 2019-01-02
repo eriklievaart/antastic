@@ -91,5 +91,4 @@ public class MainController {
 
 		components.getFrame().setVisible(true);
 	}
-
 }

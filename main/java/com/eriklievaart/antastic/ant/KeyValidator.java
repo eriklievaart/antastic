@@ -8,5 +8,4 @@ public class KeyValidator {
 	public static void check(String key) {
 		Check.matches(key, PROPERTY_PATTERN, "invalid key % should match $", key, PROPERTY_PATTERN);
 	}
-
 }

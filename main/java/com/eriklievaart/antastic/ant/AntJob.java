@@ -48,5 +48,4 @@ public class AntJob {
 	public String toString() {
 		return ToString.simple(this, "$[$ $ $]", project.getName(), buildFile.getName(), target);
 	}
-
 }

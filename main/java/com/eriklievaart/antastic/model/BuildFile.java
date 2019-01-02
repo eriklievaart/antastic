@@ -92,5 +92,4 @@ public class BuildFile implements Comparable<BuildFile> {
 	public int compareTo(BuildFile o) {
 		return location.getName().compareTo(o.location.getName());
 	}
-
 }

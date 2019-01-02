@@ -106,5 +106,4 @@ public class ScriptController {
 			log.warn(e);
 		}
 	}
-
 }

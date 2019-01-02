@@ -43,5 +43,4 @@ public class AntCommandBuilder {
 	public String toString() {
 		return String.join(" ", toArray());
 	}
-
 }

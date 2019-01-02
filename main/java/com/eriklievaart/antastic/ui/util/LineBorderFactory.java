@@ -14,5 +14,4 @@ public class LineBorderFactory {
 		Border l = BorderFactory.createLineBorder(c);
 		component.setBorder(BorderFactory.createTitledBorder(l, title, TitledBorder.CENTER, TitledBorder.TOP, null, c));
 	}
-
 }

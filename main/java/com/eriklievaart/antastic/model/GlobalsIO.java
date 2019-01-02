@@ -30,5 +30,4 @@ public class GlobalsIO {
 			throw new RuntimeIOException("Unable to save globals in $", e, file);
 		}
 	}
-
 }

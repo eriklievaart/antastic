@@ -113,5 +113,4 @@ public class LastSelection {
 		}
 		data = PropertiesIO.loadStrings(file);
 	}
-
 }

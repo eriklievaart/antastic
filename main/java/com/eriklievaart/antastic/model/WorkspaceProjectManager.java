@@ -38,5 +38,4 @@ public class WorkspaceProjectManager {
 	public List<WorkspaceProject> getProjects() {
 		return Collections.unmodifiableList(projects);
 	}
-
 }

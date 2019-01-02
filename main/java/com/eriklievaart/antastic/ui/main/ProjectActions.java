@@ -25,5 +25,4 @@ public class ProjectActions {
 	public void scriptEditor() {
 		scripts.show();
 	}
-
 }
