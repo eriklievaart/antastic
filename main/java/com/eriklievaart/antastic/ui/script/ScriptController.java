@@ -20,6 +20,7 @@ import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.str.Str;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
 import com.eriklievaart.toolkit.swing.api.ActionLambda;
+import com.eriklievaart.toolkit.swing.api.text.UndoTool;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -50,6 +51,7 @@ public class ScriptController {
 		area.setForeground(Color.WHITE);
 		area.setCaretColor(Color.YELLOW);
 
+		UndoTool.addUndoFunctionality(area);
 		addSaveAction();
 	}
 
