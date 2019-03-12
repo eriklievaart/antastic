@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
+
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.antastic.model.WorkspaceProject;
@@ -84,6 +86,8 @@ public class AntScriptRunner {
 				builder.putAll(job.getProperties());
 				Process process = builder.runTarget(job.getTarget());
 				if (process.exitValue() != 0) {
+					String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
+					JOptionPane.showMessageDialog(null, message);
 					return;
 				}
 			}
