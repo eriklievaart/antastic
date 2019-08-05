@@ -87,6 +87,7 @@ public class AntScriptRunner {
 				Process process = builder.runTarget(job.getTarget());
 				if (process.exitValue() != 0) {
 					String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
+					log.info(message);
 					JOptionPane.showMessageDialog(null, message);
 					return;
 				}
