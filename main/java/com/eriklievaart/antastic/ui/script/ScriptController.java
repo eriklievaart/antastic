@@ -75,8 +75,11 @@ public class ScriptController {
 		storeScript();
 		new Thread(() -> {
 			try {
-				script.run(text);
-
+				if (text == null) {
+					JOptionPane.showMessageDialog(null, "No lines selected!");
+				} else {
+					script.run(text);
+				}
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(components.getJFrame(), "Exception in script: " + e.getMessage());
 				log.warn("Unable to execute script", e);

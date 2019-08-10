@@ -47,7 +47,9 @@ public class AntScriptRunner {
 	}
 
 	private List<AntJob> parse(String raw) {
-		List<String> lines = new LineFilter(raw).dropEmpty().dropHash().eof().list();
+		Check.notNull(raw);
+
+		List<String> lines = new LineFilter(raw).dropBlank().dropHash().eof().list();
 		List<AntJob> result = NewCollection.list();
 		Map<String, String> properties = NewCollection.map();
 
