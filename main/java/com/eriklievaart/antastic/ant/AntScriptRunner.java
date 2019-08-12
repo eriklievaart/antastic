@@ -82,19 +82,24 @@ public class AntScriptRunner {
 	private void runSequentialJobs(List<AntJob> jobs) throws Exception {
 		AntScheduler.schedule(() -> {
 			for (AntJob job : jobs) {
-				printBanner(job);
-				File project = job.getProject().getRoot();
-				AntProcessBuilder builder = new AntProcessBuilder(job.getBuildFile(), project);
-				builder.putAll(job.getProperties());
-				Process process = builder.runTarget(job.getTarget());
-				if (process.exitValue() != 0) {
-					String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
-					log.info(message);
-					JOptionPane.showMessageDialog(null, message);
-					return;
-				}
+				runJob(job);
 			}
 		});
+	}
+
+	private void runJob(AntJob job) {
+		printBanner(job);
+		File project = job.getProject().getRoot();
+		AntProcessBuilder builder = new AntProcessBuilder(job.getBuildFile(), project);
+		builder.putAll(job.getProperties());
+		Process process = builder.runTarget(job.getTarget());
+		if (process.exitValue() != 0) {
+			AntScheduler.dirty();
+			String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
+			log.info(message);
+			JOptionPane.showMessageDialog(null, message);
+			return;
+		}
 	}
 
 	private void printBanner(AntJob job) {
