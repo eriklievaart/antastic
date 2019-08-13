@@ -16,21 +16,11 @@ import com.google.inject.Injector;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		if (args.length > 0) {
-			runScripts(args);
-			AntScheduler.shutdownOnComplete();
-
-		} else {
+		if (args.length == 0) {
 			runGui();
+		} else {
+			runScripts(args);
 		}
-	}
-
-	private static void runScripts(String[] args) throws Exception {
-		List<File> files = NewCollection.list();
-		for (String path : args) {
-			files.add(new File(path));
-		}
-		Guice.createInjector().getInstance(AntScriptRunner.class).run(files);
 	}
 
 	private static void runGui() {
@@ -42,5 +32,20 @@ public class Main {
 				injector.getInstance(MainController.class).show();
 			}
 		});
+	}
+
+	private static void runScripts(String[] args) throws Exception {
+		AntScriptRunner runner = Guice.createInjector().getInstance(AntScriptRunner.class);
+		runner.run(getFiles(args));
+		AntScheduler.awaitTermination();
+		System.exit(runner.isDirty() ? 101 : 0);
+	}
+
+	private static List<File> getFiles(String[] args) {
+		List<File> files = NewCollection.list();
+		for (String path : args) {
+			files.add(new File(path));
+		}
+		return files;
 	}
 }

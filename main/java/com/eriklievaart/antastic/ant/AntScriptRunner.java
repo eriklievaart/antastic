@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JOptionPane;
 
@@ -15,6 +16,7 @@ import com.eriklievaart.antastic.model.WorkspaceProjectManager;
 import com.eriklievaart.toolkit.io.api.CheckFile;
 import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.LineFilter;
+import com.eriklievaart.toolkit.io.api.SystemProperties;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.lang.api.str.Str;
@@ -23,6 +25,8 @@ import com.google.inject.Inject;
 
 public class AntScriptRunner {
 	private LogTemplate log = new LogTemplate(getClass());
+
+	private AtomicBoolean dirty = new AtomicBoolean();
 
 	@Inject
 	private WorkspaceProjectManager projects;
@@ -46,7 +50,7 @@ public class AntScriptRunner {
 		runSequentialJobs(parse(text));
 	}
 
-	private List<AntJob> parse(String raw) {
+	List<AntJob> parse(String raw) {
 		Check.notNull(raw);
 
 		List<String> lines = new LineFilter(raw).dropBlank().dropHash().eof().list();
@@ -81,8 +85,13 @@ public class AntScriptRunner {
 
 	private void runSequentialJobs(List<AntJob> jobs) throws Exception {
 		AntScheduler.schedule(() -> {
+			dirty.set(false);
+
 			for (AntJob job : jobs) {
 				runJob(job);
+				if (isDirty()) {
+					break; // stop execution
+				}
 			}
 		});
 	}
@@ -93,24 +102,26 @@ public class AntScriptRunner {
 		AntProcessBuilder builder = new AntProcessBuilder(job.getBuildFile(), project);
 		builder.putAll(job.getProperties());
 		Process process = builder.runTarget(job.getTarget());
+
 		if (process.exitValue() != 0) {
-			AntScheduler.dirty();
+			dirty.set(true);
 			String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
 			log.info(message);
-			JOptionPane.showMessageDialog(null, message);
+			if (!SystemProperties.isSet("antastic.headless", "true")) {
+				JOptionPane.showMessageDialog(null, message);
+			}
 			return;
 		}
 	}
 
 	private void printBanner(AntJob job) {
 		String info = Str.sub("## $ ##", job);
-		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < info.length(); i++) {
-			builder.append("#");
-		}
-		String hashes = builder.toString();
-		log.info(hashes);
+		log.info(Str.repeat("#", info.length()));
 		log.info(info);
-		log.info(hashes);
+		log.info(Str.repeat("#", info.length()));
+	}
+
+	public boolean isDirty() {
+		return dirty.get();
 	}
 }

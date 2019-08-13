@@ -2,6 +2,7 @@ package com.eriklievaart.antastic.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,10 +10,14 @@ import java.util.stream.Collectors;
 
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.antastic.model.Group;
+import com.eriklievaart.toolkit.io.api.ResourceTool;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.io.api.ini.IniNode;
 import com.eriklievaart.toolkit.io.api.ini.IniNodeIO;
+import com.eriklievaart.toolkit.io.api.ini.IniNodeValidator;
 import com.eriklievaart.toolkit.lang.api.check.Check;
+import com.eriklievaart.toolkit.lang.api.collection.CollectionTool;
+import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.lang.api.collection.SetTool;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
 import com.google.inject.Singleton;
@@ -35,16 +40,30 @@ public class AntasticConfig {
 	private IniNode configRoot = new IniNode("root");
 
 	public AntasticConfig() throws IOException {
-		load();
+		try {
+			init();
+		} catch (Exception e) {
+			log.error("Failed to start Antastic; $", e, e.getMessage());
+			throw new IOException(e);
+		}
 	}
 
-	private void load() throws IOException {
+	private void init() throws IOException {
 		File file = ApplicationPaths.getAntasticConfigFile();
 		if (file.isFile()) {
-			for (IniNode child : IniNodeIO.read(file)) {
+			List<IniNode> configuration = IniNodeIO.read(file);
+			verifyContents(configuration);
+			for (IniNode child : configuration) {
 				configRoot.addChild(child);
 			}
+		} else {
+			throw new RuntimeIOException("config file $ does not exist!", file);
 		}
+	}
+
+	private void verifyContents(List<IniNode> configuration) {
+		InputStream is = ResourceTool.getInputStream("/config-schema.ini");
+		IniNodeValidator.validate(configuration, CollectionTool.getSingle(IniNodeIO.read(is)));
 	}
 
 	public List<ProjectLocation> listProjectLocations() {
@@ -128,7 +147,12 @@ public class AntasticConfig {
 
 	public BuildFile getBuildFile() {
 		File file = new File(configRoot.getProperty(BUILD_FILE_PROPERTY_PATH));
-		File filters = new File(configRoot.getProperty(BUILD_FILTER_PROPERTY_PATH));
-		return new BuildFile(file, IniNodeIO.read(filters));
+
+		if (configRoot.hasProperty(BUILD_FILTER_PROPERTY_PATH)) {
+			File filters = new File(configRoot.getProperty(BUILD_FILTER_PROPERTY_PATH));
+			return new BuildFile(file, IniNodeIO.read(filters));
+		} else {
+			return new BuildFile(file, NewCollection.list());
+		}
 	}
 }
