@@ -3,6 +3,7 @@ package com.eriklievaart.antastic.ui.main;
 import com.eriklievaart.antastic.model.GlobalsIO;
 import com.eriklievaart.antastic.ui.properties.PropertiesController;
 import com.eriklievaart.antastic.ui.script.ScriptController;
+import com.eriklievaart.toolkit.swing.api.menu.Accelerator;
 import com.eriklievaart.toolkit.swing.api.menu.Command;
 import com.eriklievaart.toolkit.swing.api.menu.Menu;
 import com.google.inject.Inject;
@@ -22,6 +23,7 @@ public class ProjectActions {
 	}
 
 	@Command(name = "script")
+	@Accelerator("ctrl alt S")
 	public void scriptEditor() {
 		scripts.show();
 	}

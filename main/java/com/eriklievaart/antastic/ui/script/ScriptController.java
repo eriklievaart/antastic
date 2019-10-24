@@ -90,6 +90,7 @@ public class ScriptController {
 
 	public void show() {
 		components.getJFrame().setVisible(true);
+		components.getRunButton().requestFocus();
 	}
 
 	private String loadScript() {
