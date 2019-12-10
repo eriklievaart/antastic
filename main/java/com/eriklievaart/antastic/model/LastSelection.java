@@ -6,8 +6,8 @@ import java.util.Optional;
 
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
-import com.eriklievaart.toolkit.io.api.PropertiesIO;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
+import com.eriklievaart.toolkit.io.api.properties.PropertiesIO;
 import com.eriklievaart.toolkit.lang.api.FormattedException;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.google.inject.Inject;

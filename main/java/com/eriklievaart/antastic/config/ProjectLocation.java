@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.eriklievaart.toolkit.io.api.PropertiesIO;
+import com.eriklievaart.toolkit.io.api.properties.PropertiesIO;
 import com.eriklievaart.toolkit.lang.api.ToString;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
