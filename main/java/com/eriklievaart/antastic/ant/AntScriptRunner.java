@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JOptionPane;
 
+import com.eriklievaart.antastic.config.AntConfig;
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.antastic.model.WorkspaceProject;
@@ -32,6 +33,8 @@ public class AntScriptRunner {
 	private WorkspaceProjectManager projects;
 	@Inject
 	private AntasticConfig config;
+	@Inject
+	private AntConfig ant;
 
 	public void run(File file) throws Exception {
 		run(Arrays.asList(file));
@@ -99,7 +102,7 @@ public class AntScriptRunner {
 	private void runJob(AntJob job) {
 		printBanner(job);
 		File project = job.getProject().getRoot();
-		AntProcessBuilder builder = new AntProcessBuilder(job.getBuildFile(), project);
+		AntProcessBuilder builder = new AntProcessBuilder(ant, job.getBuildFile(), project);
 		builder.putAll(job.getProperties());
 		Process process = builder.runTarget(job.getTarget());
 

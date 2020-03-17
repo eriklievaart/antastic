@@ -24,14 +24,14 @@ public class MainController {
 	private MainRefresh refresh;
 
 	@Inject
-	public MainController(MainComponents components, ProjectActions projectActions, final BuildFileActions antActions) {
+	public MainController(MainComponents components, AntActions antActions, final BuildFileActions buildActions) {
 		this.components = components;
 
 		JFrame frame = components.getFrame();
-		frame.getContentPane().add(createMainPanel(antActions));
+		frame.getContentPane().add(createMainPanel(buildActions));
 
 		ReflectionMenuBuilder menuBuilder = new ReflectionMenuBuilder();
-		frame.setJMenuBar(menuBuilder.createMenuBar(projectActions, antActions));
+		frame.setJMenuBar(menuBuilder.createMenuBar(antActions, buildActions));
 	}
 
 	private JPanel createMainPanel(final BuildFileActions antActions) {

@@ -29,4 +29,8 @@ public class ApplicationPaths {
 	public static File getWindowSaverFile() {
 		return new File(getDataDir(), "windowsaver.ini");
 	}
+
+	public static File getAntConfigFile() {
+		return new File(JvmPaths.getJarDirOrClassDir(ApplicationPaths.class), "data/ant.txt");
+	}
 }

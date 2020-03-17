@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
+import com.eriklievaart.antastic.config.AntConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
@@ -26,14 +27,17 @@ public class AntProcessBuilder {
 
 	private BuildFile buildFile;
 	private File projectRootDir;
-	private File linuxAnt = new File("/usr/bin/ant");
+	private File executable;
 
 	private Map<String, String> properties = NewCollection.map();
 
-	public AntProcessBuilder(BuildFile buildFile, File projectRootDir) {
+	public AntProcessBuilder(AntConfig ant, BuildFile buildFile, File projectRootDir) {
 		Check.notNull(buildFile, projectRootDir);
+		this.executable = ant.getExecutable();
 		this.buildFile = buildFile;
 		this.projectRootDir = projectRootDir;
+
+		log.info("ant executable: $", executable);
 	}
 
 	public AntProcessBuilder antHome() {
@@ -41,7 +45,7 @@ public class AntProcessBuilder {
 	}
 
 	public boolean isAntAvailable() {
-		return linuxAnt.exists();
+		return executable.exists();
 	}
 
 	public Process runTarget(String target) {
@@ -89,7 +93,7 @@ public class AntProcessBuilder {
 	}
 
 	private void addExecutable(AntCommandBuilder builder) {
-		builder.addArguments(linuxAnt.getAbsolutePath());
+		builder.addArguments(executable.getAbsolutePath());
 	}
 
 	private void copyStreamInThread(InputStream in, PrintStream out) throws IOException {

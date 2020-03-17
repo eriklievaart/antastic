@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 
 import com.eriklievaart.antastic.ant.AntProcessBuilder;
 import com.eriklievaart.antastic.ant.AntScheduler;
+import com.eriklievaart.antastic.config.AntConfig;
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.antastic.model.WorkspaceProject;
@@ -15,13 +16,15 @@ import com.eriklievaart.toolkit.swing.api.menu.Command;
 import com.eriklievaart.toolkit.swing.api.menu.Menu;
 import com.google.inject.Inject;
 
-@Menu(text = "build files")
+@Menu(text = "build file")
 public class BuildFileActions {
 
 	@Inject
 	private MainComponents components;
 	@Inject
 	private AntasticConfig config;
+	@Inject
+	private AntConfig ant;
 
 	@Command(name = "run selected target")
 	public void runSelectedTarget() throws IOException {
@@ -35,7 +38,7 @@ public class BuildFileActions {
 	}
 
 	private void runTarget(WorkspaceProject project, BuildFile selected, String target) throws IOException {
-		AntProcessBuilder builder = new AntProcessBuilder(selected, project.getRoot());
+		AntProcessBuilder builder = new AntProcessBuilder(ant, selected, project.getRoot());
 		if (!builder.isAntAvailable()) {
 			throw new FormattedException("Ant not available!");
 		}

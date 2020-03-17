@@ -1,6 +1,7 @@
 package com.eriklievaart.antastic.ui.main;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -35,7 +36,8 @@ public class ProjectSelectionListener implements ListSelectionListener {
 			return;
 		}
 		Group selectedGroup = components.getGroupList().getSelectedValue();
-		if (project.getName().equals(last.getProject(selectedGroup))) {
+		Optional<WorkspaceProject> optional = last.getProject(selectedGroup);
+		if (optional.isPresent() && optional.get().equals(project)) {
 			return;
 		}
 		last.setProject(selectedGroup, project);
