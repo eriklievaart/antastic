@@ -21,6 +21,7 @@ public class Main {
 		if (args.length == 0) {
 			runGui();
 		} else {
+			System.setProperty("antastic.headless", "true");
 			runScripts(args);
 		}
 	}
