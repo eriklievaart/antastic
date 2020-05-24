@@ -3,6 +3,7 @@ package com.eriklievaart.antastic.config;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 
 import com.eriklievaart.toolkit.io.api.properties.PropertiesIO;
 import com.eriklievaart.toolkit.lang.api.ToString;
@@ -42,6 +43,11 @@ public class ProjectLocation {
 			log.warn("Property file $ for project % does not exist!", properties, name);
 			return Collections.emptyList();
 		}
+	}
+
+	public Optional<String> getProperty(String key) {
+		String value = PropertiesIO.loadStrings(properties).get(key);
+		return value == null ? Optional.empty() : Optional.of(value);
 	}
 
 	public void setPropertyFile(File file) {

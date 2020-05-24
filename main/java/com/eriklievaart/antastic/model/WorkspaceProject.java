@@ -2,9 +2,11 @@ package com.eriklievaart.antastic.model;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Optional;
 
 import com.eriklievaart.antastic.ant.KeyValidator;
 import com.eriklievaart.antastic.config.ProjectLocation;
+import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 
 public class WorkspaceProject implements Comparable<WorkspaceProject> {
 	private ProjectLocation location;
@@ -28,6 +30,11 @@ public class WorkspaceProject implements Comparable<WorkspaceProject> {
 
 	public Collection<String> getPropertyNames() {
 		return location.getPropertyNames();
+	}
+
+	public String getProperty(String key) {
+		Optional<String> optional = location.getProperty(key);
+		return optional.orElseThrow(() -> new RuntimeIOException("property % not set for project %", key, getName()));
 	}
 
 	@Override
