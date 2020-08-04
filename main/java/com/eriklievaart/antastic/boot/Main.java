@@ -12,6 +12,7 @@ import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.swing.api.SwingThread;
 import com.eriklievaart.toolkit.swing.api.WindowSaver;
+import com.eriklievaart.toolkit.swing.api.laf.LookAndFeel;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -30,6 +31,7 @@ public class Main {
 		SwingThread.invokeLater(new Runnable() {
 			@Override
 			public void run() {
+				LookAndFeel.instance().load();
 				WindowSaver.initialize(ApplicationPaths.getWindowSaverFile());
 				Injector injector = Guice.createInjector();
 				injector.getInstance(MainController.class).show();

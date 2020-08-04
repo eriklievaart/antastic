@@ -1,8 +1,6 @@
 package com.eriklievaart.antastic.ui.script;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.function.Consumer;
@@ -47,18 +45,11 @@ public class ScriptController {
 	private void initArea() {
 		JTextArea area = components.getArea();
 		area.setText(loadScript());
-		area.setBackground(Color.DARK_GRAY);
-		area.setForeground(Color.WHITE);
-		area.setCaretColor(Color.YELLOW);
-
 		UndoTool.addUndoFunctionality(area);
 		addSaveAction();
 	}
 
 	private void addSaveAction() {
-		Font font = components.getArea().getFont().deriveFont(Font.PLAIN).deriveFont(18.0f);
-		components.getArea().setFont(font);
-
 		KeyStroke ctrlS = KeyStroke.getKeyStroke("control S");
 		KeyStroke ctrlR = KeyStroke.getKeyStroke("control R");
 		bind(ctrlS, "save.script", e -> storeScript());

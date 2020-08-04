@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JOptionPane;
 
@@ -26,8 +25,6 @@ import com.google.inject.Inject;
 
 public class AntScriptRunner {
 	private LogTemplate log = new LogTemplate(getClass());
-
-	private AtomicBoolean dirty = new AtomicBoolean();
 
 	@Inject
 	private WorkspaceProjectManager projects;
@@ -88,7 +85,7 @@ public class AntScriptRunner {
 
 	private void runSequentialJobs(List<AntJob> jobs) throws Exception {
 		AntScheduler.schedule(() -> {
-			dirty.set(false);
+			AntScheduler.DIRTY.set(false);
 
 			for (AntJob job : jobs) {
 				runJob(job);
@@ -107,7 +104,7 @@ public class AntScriptRunner {
 		Process process = builder.runTarget(job.getTarget());
 
 		if (process.exitValue() != 0) {
-			dirty.set(true);
+			AntScheduler.DIRTY.set(true);
 			String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
 			log.info(message);
 			if (!SystemProperties.isSet("antastic.headless", "true")) {
@@ -125,6 +122,6 @@ public class AntScriptRunner {
 	}
 
 	public boolean isDirty() {
-		return dirty.get();
+		return AntScheduler.DIRTY.get();
 	}
 }
