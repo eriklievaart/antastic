@@ -10,22 +10,22 @@ import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.io.api.properties.PropertiesIO;
 import com.eriklievaart.toolkit.lang.api.FormattedException;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
-@Singleton
 public class LastSelection {
 	private static final String WORKING_SET_KEY = "workingset";
+	private static final LastSelection INSTANCE = new LastSelection();
 
-	@Inject
-	private AntasticConfig config;
-	@Inject
-	private WorkspaceProjectManager projects;
+	private AntasticConfig config = AntasticConfig.singleton();
+	private WorkspaceProjectManager projects = WorkspaceProjectManager.singleton();
 
 	private Map<String, String> data = NewCollection.map();
 
-	public LastSelection() {
+	private LastSelection() {
 		load();
+	}
+
+	public static LastSelection singleton() {
+		return INSTANCE;
 	}
 
 	public void setWorkspaceSelected(Group value) {
