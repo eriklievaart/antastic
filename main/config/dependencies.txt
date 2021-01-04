@@ -4,6 +4,7 @@ toolkit @local @snapshot
 ant org.apache.ant 1.10.3
 ant-launcher org.apache.ant 1.10.3
 commons-io commons-io 2.4
+guice com.google.inject 1.0
 
 [test]
 junit junit 4.7

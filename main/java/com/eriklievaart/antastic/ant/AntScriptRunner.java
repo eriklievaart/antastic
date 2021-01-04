@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.swing.JOptionPane;
+
 import com.eriklievaart.antastic.config.AntConfig;
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.model.BuildFile;
@@ -14,13 +16,22 @@ import com.eriklievaart.antastic.model.WorkspaceProjectManager;
 import com.eriklievaart.toolkit.io.api.CheckFile;
 import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.LineFilter;
+import com.eriklievaart.toolkit.io.api.SystemProperties;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.lang.api.str.Str;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
+import com.google.inject.Inject;
 
 public class AntScriptRunner {
 	private LogTemplate log = new LogTemplate(getClass());
+
+	@Inject
+	private WorkspaceProjectManager projects;
+	@Inject
+	private AntasticConfig config;
+	@Inject
+	private AntConfig ant;
 
 	public void run(File file) throws Exception {
 		run(Arrays.asList(file));
@@ -65,8 +76,8 @@ public class AntScriptRunner {
 	public AntJob parseJob(String line) {
 		String[] split = line.trim().split("\\s++");
 		Check.isTrue(split.length == 2, "Expected [project] [target] got $", line);
-		Optional<WorkspaceProject> project = WorkspaceProjectManager.singleton().getProjectByName(split[0]);
-		BuildFile build = AntasticConfig.singleton().getBuildFile();
+		Optional<WorkspaceProject> project = projects.getProjectByName(split[0]);
+		BuildFile build = config.getBuildFile();
 
 		Check.isTrue(project.isPresent(), "Project % not configured!", split[0]);
 		return new AntJob(project.get(), build, split[1]);
@@ -88,7 +99,7 @@ public class AntScriptRunner {
 	private void runJob(AntJob job) {
 		printBanner(job);
 		File project = job.getProject().getRoot();
-		AntProcessBuilder builder = new AntProcessBuilder(AntConfig.singleton(), job.getBuildFile(), project);
+		AntProcessBuilder builder = new AntProcessBuilder(ant, job.getBuildFile(), project);
 		builder.putAll(job.getProperties());
 		Process process = builder.runTarget(job.getTarget());
 
@@ -96,6 +107,9 @@ public class AntScriptRunner {
 			AntScheduler.DIRTY.set(true);
 			String message = Str.sub("$ $ failed!", job.getProject().getName(), job.getTarget());
 			log.info(message);
+			if (!SystemProperties.isSet("antastic.headless", "true")) {
+				JOptionPane.showMessageDialog(null, message);
+			}
 			return;
 		}
 	}

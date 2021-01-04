@@ -16,6 +16,7 @@ import com.eriklievaart.toolkit.io.api.ResourceTool;
 import com.eriklievaart.toolkit.io.api.ini.IniNode;
 import com.eriklievaart.toolkit.io.api.ini.IniNodeIO;
 import com.eriklievaart.toolkit.lang.api.check.Check;
+import com.google.inject.Guice;
 
 public class AntScriptRunnerI {
 
@@ -25,6 +26,7 @@ public class AntScriptRunnerI {
 	@Before
 	public void init() throws FileNotFoundException {
 		FileTool.clean(spool);
+		System.setProperty("antastic.headless", "true");
 		File config = ApplicationPaths.getAntasticConfigFile();
 		if (!config.exists()) {
 			config.getParentFile().mkdirs();
@@ -94,7 +96,7 @@ public class AntScriptRunnerI {
 	}
 
 	private AntScriptRunner getScriptRunner() {
-		return new AntScriptRunner();
+		return Guice.createInjector().getInstance(AntScriptRunner.class);
 	}
 
 	private File getScriptThatCreatesFile() {

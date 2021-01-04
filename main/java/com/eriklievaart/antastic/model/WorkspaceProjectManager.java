@@ -7,20 +7,19 @@ import java.util.stream.Collectors;
 
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ProjectLocation;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class WorkspaceProjectManager {
-	private static final WorkspaceProjectManager INSTANCE = new WorkspaceProjectManager(AntasticConfig.singleton());
 
 	private final List<WorkspaceProject> projects;
 
-	private WorkspaceProjectManager(AntasticConfig config) {
+	@Inject
+	public WorkspaceProjectManager(AntasticConfig config) {
 		List<ProjectLocation> nodes = config.listProjectLocations();
 		projects = nodes.stream().map(WorkspaceProject::new).collect(Collectors.toList());
 		Collections.sort(projects);
-	}
-
-	public static WorkspaceProjectManager singleton() {
-		return INSTANCE;
 	}
 
 	public WorkspaceProject[] toArray() {

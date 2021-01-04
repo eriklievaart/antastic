@@ -10,11 +10,14 @@ import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.JvmPaths;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.lang.api.str.StringBuilderWrapper;
+import com.google.inject.Inject;
 
 public class ScriptTemplates {
 
-	private WorkspaceProjectManager workspace = WorkspaceProjectManager.singleton();
-	private AntasticConfig config = AntasticConfig.singleton();
+	@Inject
+	private WorkspaceProjectManager workspace;
+	@Inject
+	private AntasticConfig config;
 
 	public File resolve(String project) {
 		String root = JvmPaths.getJarDirOrRunDir(getClass());

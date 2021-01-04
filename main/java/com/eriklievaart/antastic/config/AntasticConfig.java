@@ -20,7 +20,9 @@ import com.eriklievaart.toolkit.lang.api.collection.CollectionTool;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.lang.api.collection.SetTool;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AntasticConfig {
 
 	private static final String BUILD_FILE_PROPERTY_PATH = "buildfile/path";
@@ -34,22 +36,16 @@ public class AntasticConfig {
 	private static final String WORKINGSET_NODE = "group";
 	private static final String PROJECT_NODE = "project";
 
-	private static final AntasticConfig INSTANCE = new AntasticConfig();
-
 	private final LogTemplate log = new LogTemplate(getClass());
 	private IniNode configRoot = new IniNode("root");
 
-	private AntasticConfig() {
+	public AntasticConfig() throws IOException {
 		try {
 			init();
 		} catch (Exception e) {
 			log.error("Failed to start Antastic; $", e, e.getMessage());
-			throw new RuntimeIOException(e);
+			throw new IOException(e);
 		}
-	}
-
-	public static AntasticConfig singleton() {
-		return INSTANCE;
 	}
 
 	private void init() throws IOException {
