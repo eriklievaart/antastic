@@ -18,6 +18,7 @@ import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.LineFilter;
 import com.eriklievaart.toolkit.io.api.SystemProperties;
 import com.eriklievaart.toolkit.lang.api.check.Check;
+import com.eriklievaart.toolkit.lang.api.collection.ListTool;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.lang.api.str.Str;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
@@ -27,7 +28,7 @@ public class AntScriptRunner {
 	private LogTemplate log = new LogTemplate(getClass());
 
 	@Inject
-	private WorkspaceProjectManager projects;
+	private WorkspaceProjectManager workspace;
 	@Inject
 	private AntasticConfig config;
 	@Inject
@@ -41,13 +42,23 @@ public class AntScriptRunner {
 		List<AntJob> jobs = NewCollection.list();
 		for (File file : files) {
 			CheckFile.isFile(file);
-			jobs.addAll(parse(FileTool.toString(file)));
+			jobs.addAll(parse(loadFile(file)));
 		}
 		runSequentialJobs(jobs);
 	}
 
 	public void run(String text) throws Exception {
 		runSequentialJobs(parse(text));
+	}
+
+	private String loadFile(File file) {
+		String raw = FileTool.toString(file);
+		if (!raw.contains("@DEFAULTS@")) {
+			return raw;
+		}
+		String project = file.getName();
+		String[] targets = workspace.getProjectByName(project).get().getProperty("target").trim().split("[, ]++");
+		return raw.replace("@DEFAULTS@", Str.joinLines(ListTool.map(targets, target -> project + " " + target)));
 	}
 
 	List<AntJob> parse(String raw) {
@@ -76,7 +87,7 @@ public class AntScriptRunner {
 	public AntJob parseJob(String line) {
 		String[] split = line.trim().split("\\s++");
 		Check.isTrue(split.length == 2, "Expected [project] [target] got $", line);
-		Optional<WorkspaceProject> project = projects.getProjectByName(split[0]);
+		Optional<WorkspaceProject> project = workspace.getProjectByName(split[0]);
 		BuildFile build = config.getBuildFile();
 
 		Check.isTrue(project.isPresent(), "Project % not configured!", split[0]);

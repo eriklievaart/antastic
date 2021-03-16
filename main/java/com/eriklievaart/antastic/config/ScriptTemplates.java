@@ -36,10 +36,7 @@ public class ScriptTemplates {
 	private String createTemplate(WorkspaceProject project) {
 		StringBuilderWrapper builder = new StringBuilderWrapper();
 		builder.appendLine();
-
-		for (String target : project.getProperty("target").split("[, ]++")) {
-			builder.append(project.getName()).append(" ").appendLine(target);
-		}
+		builder.appendLine("@DEFAULTS@");
 		builder.appendLine();
 		builder.appendLine("@EOF@");
 		builder.appendLine();
