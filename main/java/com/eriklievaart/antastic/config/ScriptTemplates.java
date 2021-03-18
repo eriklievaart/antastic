@@ -26,7 +26,7 @@ public class ScriptTemplates {
 
 		if (!resolved.exists()) {
 			Optional<WorkspaceProject> optional = workspace.getProjectByName(project);
-			RuntimeIOException.unless(optional.isPresent(), "project % does not exist!", resolved.getAbsolutePath());
+			RuntimeIOException.unless(optional.isPresent(), "project % does not exist!", project);
 			Console.println("creating: $", resolved.getAbsolutePath());
 			FileTool.writeStringToFile(createTemplate(optional.get()), resolved);
 		}
