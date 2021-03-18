@@ -1,15 +1,13 @@
 package com.eriklievaart.antastic.boot;
 
 import java.io.File;
-import java.util.List;
 
+import com.eriklievaart.antastic.ant.AntJobRunner;
 import com.eriklievaart.antastic.ant.AntScheduler;
-import com.eriklievaart.antastic.ant.AntScriptRunner;
+import com.eriklievaart.antastic.ant.AntScript;
 import com.eriklievaart.antastic.config.ApplicationPaths;
-import com.eriklievaart.antastic.config.ScriptTemplates;
 import com.eriklievaart.antastic.ui.main.MainController;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
-import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.swing.api.SwingThread;
 import com.eriklievaart.toolkit.swing.api.WindowSaver;
 import com.eriklievaart.toolkit.swing.api.laf.LookAndFeel;
@@ -41,24 +39,26 @@ public class Main {
 
 	private static void runScripts(String[] args) throws Exception {
 		Injector injector = Guice.createInjector();
-		List<File> files = getFiles(args, injector.getInstance(ScriptTemplates.class));
-
-		injector.getInstance(AntScriptRunner.class).run(files);
+		injector.getInstance(AntJobRunner.class).run(createAntScript(injector, args));
 		AntScheduler.awaitTermination();
-		System.exit(injector.getInstance(AntScriptRunner.class).isDirty() ? 101 : 0);
+		System.exit(injector.getInstance(AntJobRunner.class).isDirty() ? 101 : 0);
 	}
 
-	private static List<File> getFiles(String[] args, ScriptTemplates templates) {
-		List<File> files = NewCollection.list();
+	private static AntScript createAntScript(Injector injector, String[] args) {
+		AntScript script = injector.getInstance(AntScript.class);
+
 		for (String arg : args) {
 			File file = new File(arg);
-			if (file.exists()) {
-				files.add(file);
+			if (arg.contains("/") || arg.contains("\\")) {
+				RuntimeIOException.unless(file.exists(), "File % does not exist!", arg);
+				script.queueFile(file);
+			} else if (arg.contains(":")) {
+				String[] projectToTarget = arg.split(":", 2);
+				script.queueTarget(projectToTarget[0], projectToTarget[1]);
 			} else {
-				RuntimeIOException.on(arg.contains("/") || arg.contains("\\"), "% does not exist!", arg);
-				files.add(templates.resolve(arg));
+				script.queueProject(arg);
 			}
 		}
-		return files;
+		return script;
 	}
 }

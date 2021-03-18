@@ -10,8 +10,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
-import com.eriklievaart.antastic.ant.AntScriptRunner;
+import com.eriklievaart.antastic.ant.AntJobRunner;
+import com.eriklievaart.antastic.ant.AntScript;
+import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
+import com.eriklievaart.antastic.model.WorkspaceProjectManager;
 import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
 import com.eriklievaart.toolkit.lang.api.check.Check;
@@ -30,7 +33,11 @@ public class ScriptController {
 	private ScriptComponents components;
 
 	@Inject
-	private AntScriptRunner script;
+	private AntJobRunner runner;
+	@Inject
+	private AntasticConfig config;
+	@Inject
+	private WorkspaceProjectManager workspace;
 
 	@Inject
 	public ScriptController(ScriptComponents components) {
@@ -69,7 +76,7 @@ public class ScriptController {
 				if (text == null) {
 					JOptionPane.showMessageDialog(null, "No lines selected!");
 				} else {
-					script.run(text);
+					runner.run(new AntScript(config, workspace).queueRaw(text));
 				}
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(components.getJFrame(), "Exception in script: " + e.getMessage());

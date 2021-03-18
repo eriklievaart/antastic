@@ -17,6 +17,7 @@ import com.eriklievaart.toolkit.io.api.ini.IniNode;
 import com.eriklievaart.toolkit.io.api.ini.IniNodeIO;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.google.inject.Guice;
+import com.google.inject.Injector;
 
 public class AntScriptRunnerI {
 
@@ -48,31 +49,39 @@ public class AntScriptRunnerI {
 
 	@Test
 	public void runScriptPass() throws Exception {
+		Injector injector = Guice.createInjector();
+		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
+		AntScript script = injector.getInstance(AntScript.class);
+
 		File file = getTestFile();
 		CheckFile.notExists(file);
 
-		getScriptRunner().run(getScriptThatCreatesFile());
+		runner.run(script.queueFile(getScriptThatCreatesFile()));
 		checkEventually(() -> file.exists());
 	}
 
 	@Test
 	public void runScriptFail() throws Exception {
-		AntScriptRunner testable = getScriptRunner();
-		testable.run(getScriptThatFails());
-		checkEventually(() -> testable.isDirty());
+		Injector injector = Guice.createInjector();
+		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
+		AntScript script = injector.getInstance(AntScript.class);
+
+		runner.run(script.queueFile(getScriptThatFails()));
+		checkEventually(() -> runner.isDirty());
 	}
 
 	@Test
 	public void runScriptFailStopExecution() throws Exception {
+		Injector injector = Guice.createInjector();
+		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
+		AntScript script = injector.getInstance(AntScript.class);
+
 		File fileCreatedBySecondTask = getTestFile();
 		CheckFile.notExists(fileCreatedBySecondTask);
 
-		File fail = getScriptThatFails();
-		File skip = getScriptThatCreatesFile();
-		AntScriptRunner testable = getScriptRunner();
-		testable.run(Arrays.asList(fail, skip));
+		runner.run(script.queueFile(getScriptThatFails()).queueFile(getScriptThatCreatesFile()));
 
-		checkEventually(() -> testable.isDirty());
+		checkEventually(() -> runner.isDirty());
 		waitUntil(() -> fileCreatedBySecondTask.exists());
 		CheckFile.notExists(fileCreatedBySecondTask);
 	}
@@ -93,10 +102,6 @@ public class AntScriptRunnerI {
 
 	private File getScriptThatFails() {
 		return ResourceTool.getFile("/fail.antastic");
-	}
-
-	private AntScriptRunner getScriptRunner() {
-		return Guice.createInjector().getInstance(AntScriptRunner.class);
 	}
 
 	private File getScriptThatCreatesFile() {
