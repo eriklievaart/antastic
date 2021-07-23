@@ -2,11 +2,12 @@ package com.eriklievaart.antastic.model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.eriklievaart.antastic.config.AntasticConfig;
+import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.config.ProjectLocation;
+import com.eriklievaart.toolkit.lang.api.AssertionException;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -26,13 +27,13 @@ public class WorkspaceProjectManager {
 		return projects.toArray(new WorkspaceProject[] {});
 	}
 
-	public Optional<WorkspaceProject> getProjectByName(String name) {
+	public WorkspaceProject getProjectByName(String name) {
 		for (WorkspaceProject project : projects) {
 			if (project.getName().equals(name)) {
-				return Optional.of(project);
+				return project;
 			}
 		}
-		return Optional.empty();
+		throw new AssertionException("Project % unknown in $", name, ApplicationPaths.getAntasticConfigFile());
 	}
 
 	public List<WorkspaceProject> getProjects() {

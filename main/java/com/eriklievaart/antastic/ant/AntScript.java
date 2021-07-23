@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.model.BuildFile;
@@ -35,7 +34,7 @@ public class AntScript {
 	}
 
 	public AntScript queueProject(String projectName) {
-		WorkspaceProject project = workspace.getProjectByName(projectName).get();
+		WorkspaceProject project = workspace.getProjectByName(projectName);
 		for (String target : project.getProperty("target").trim().split("[, ]++")) {
 			jobs.add(new AntJob(project, config.getBuildFile(), target));
 		}
@@ -43,7 +42,7 @@ public class AntScript {
 	}
 
 	public AntScript queueTarget(String projectName, String target) {
-		WorkspaceProject project = workspace.getProjectByName(projectName).get();
+		WorkspaceProject project = workspace.getProjectByName(projectName);
 		jobs.add(new AntJob(project, config.getBuildFile(), target));
 		return this;
 	}
@@ -83,10 +82,9 @@ public class AntScript {
 	public AntJob parseJob(String line) {
 		String[] split = line.trim().split("\\s++");
 		Check.isTrue(split.length == 2, "Expected [project] [target] got $", line);
-		Optional<WorkspaceProject> project = workspace.getProjectByName(split[0]);
+		WorkspaceProject project = workspace.getProjectByName(split[0]);
 		BuildFile build = config.getBuildFile();
 
-		Check.isTrue(project.isPresent(), "Project % not configured!", split[0]);
-		return new AntJob(project.get(), build, split[1]);
+		return new AntJob(project, build, split[1]);
 	}
 }

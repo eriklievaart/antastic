@@ -1,17 +1,26 @@
 package com.eriklievaart.antastic.config;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicReference;
 
+import com.eriklievaart.toolkit.io.api.CheckFile;
 import com.eriklievaart.toolkit.io.api.JvmPaths;
 
 public class ApplicationPaths {
+
+	private static final AtomicReference<File> DATA = new AtomicReference<>(new File(getRunDir(), "data"));
 
 	public static File getRunDir() {
 		return new File(JvmPaths.getJarDirOrRunDir(ApplicationPaths.class));
 	}
 
+	public static void setDataDir(File file) {
+		CheckFile.isDirectory(file);
+		DATA.set(file);
+	}
+
 	public static File getDataDir() {
-		return new File(getRunDir(), "data");
+		return DATA.get();
 	}
 
 	public static File getGlobalsFile() {
