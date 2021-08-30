@@ -1,5 +1,5 @@
 
-#h1 Antastic
+# Antastic
 Antastic is a simple wrapper that invokes ant.
 Anything that can be done with antastic can also be done using ant on the command line.
 
@@ -14,7 +14,7 @@ It is also possible to run antastic in headless mode. When running headless, pas
 
 
 
-#h2 antastic cli
+## antastic cli
 
 To run the default targets for projects simply pass the name of the projects to antastic.
 The projects are run in the order in which they are declared.
@@ -50,7 +50,7 @@ skip.test is set only for p2. skip.checkstyle is applied for both jobs
 Lastly, arguments that start with a slash '/' are special.
 These are references to files which will be run as antastic scripts:
 
-antastic /path/to/script
+`antastic /path/to/script`
 
 In the case of a file, the file must exist and must be valid antastic script files.
 
@@ -58,18 +58,18 @@ In the case of a file, the file must exist and must be valid antastic script fil
 
 
 
-#h2 Antastic scripting
+## Antastic scripting
 The Antastic script format can be used to chain, building of multiple projects.
 Antastic will process the targets in sequence and stop if one of them fails.
 The format is as follows:
 
-[project] [target]
+`[project] [target]`
 
 All file locations are implicitly derived from the project name which is passed to the build file as a property.
 This of course requires a build file that has been designed to do this.
 It is also possible to assign properties from the script:
 
-[key]=[value]
+`[key]=[value]`
 
 Any invocations following the property will have this property set when invoked.
 It is currently not possible to unset a property once it has been set.
@@ -78,11 +78,11 @@ Start lines with a hash symbol '#' to mark them as comments.
 Scripts can be passed to the application in headless mode, but can also be created in the gui.
 Use the script menu item to create and run scripts interactively.
 
-# ant home
+### ant home
 If ant home is configured (can be done in the gui), then that ant installation will be used.
 Antastic uses /usr/bin/ant by default.
 
-# Config files
+### Config files
 /data/antastic.ini => main config file containing build file, projects, groups
 /data/filters.ini  => targets and properties that should be configured to enable these targets
 
