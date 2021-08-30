@@ -34,7 +34,7 @@ If an entry in the list has an equals sign '=', then it is evaluated as a proper
 
 `antastic p1:skip.test=true:t1`
 
-All properties are applied on all targets regardless of declaration order.
+All properties are applied on all targets of the project regardless of declaration order.
 It is also possible to specify global properties. 
 These apply to all jobs following the global property.
 So to have project p1 & p2 run with the skip.test property set to true:
@@ -45,14 +45,14 @@ but in the following example:
 
 `antastic skip.checkstyle p1 skip.test=true p2`
 
-skip.test is set only for p2. skip.checkstyle is applied for both jobs
+skip.test is set only for p2. skip.checkstyle is applied for both jobs.
 
-Lastly, arguments that start with a slash '/' are special.
-These are references to files which will be run as antastic scripts:
+Arguments that start with a slash '/' are special.
+These reference files which will be run as antastic scripts:
 
 `antastic /path/to/script`
 
-In the case of a file, the file must exist and must be valid antastic script files.
+In the case of a file, the file must exist and must be valid antastic script file.
 
 
 
