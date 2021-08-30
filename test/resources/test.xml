@@ -4,9 +4,9 @@
 	<target name="create-file">
 		<touch file="/tmp/build/antastic/run/dummy/deleteme"/>
 	</target>
-	
+
 	<target name="fail">
 		<fail message="task will always fail" />
 	</target>
-	
+
 </project>

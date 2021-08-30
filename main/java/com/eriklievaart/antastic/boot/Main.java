@@ -1,7 +1,10 @@
 package com.eriklievaart.antastic.boot;
 
 import java.io.File;
+import java.util.Hashtable;
+import java.util.Map;
 
+import com.eriklievaart.antastic.ant.AntJobBuilder;
 import com.eriklievaart.antastic.ant.AntJobRunner;
 import com.eriklievaart.antastic.ant.AntScheduler;
 import com.eriklievaart.antastic.ant.AntScript;
@@ -46,19 +49,33 @@ public class Main {
 
 	private static AntScript createAntScript(Injector injector, String[] args) {
 		AntScript script = injector.getInstance(AntScript.class);
+		Map<String, String> globals = new Hashtable<>();
 
 		for (String arg : args) {
 			File file = new File(arg);
+
 			if (arg.contains("/") || arg.contains("\\")) {
 				RuntimeIOException.unless(file.exists(), "File % does not exist!", arg);
 				script.queueFile(file);
-			} else if (arg.contains(":")) {
-				String[] projectToTarget = arg.split(":", 2);
-				script.queueTarget(projectToTarget[0], projectToTarget[1]);
+
 			} else {
-				script.queueProject(arg);
+				CliParser parser = new CliParser(arg);
+				parser.ifIsGlobal((key, value) -> globals.put(key, value));
+				parser.ifIsJob(job -> {
+					globals.forEach(job::put);
+					queue(script, job);
+				});
 			}
 		}
 		return script;
+	}
+
+	private static void queue(AntScript script, CliJob arg) {
+		AntJobBuilder builder = script.buildJob(arg.getProject());
+		builder.putAll(arg.getProperties());
+		for (String target : arg.getTargets()) {
+			builder.addTarget(target);
+		}
+		builder.queue();
 	}
 }

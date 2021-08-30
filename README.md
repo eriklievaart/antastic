@@ -1,5 +1,5 @@
 
-Antastic
+#h1 Antastic
 Antastic is a simple wrapper that invokes ant.
 Anything that can be done with antastic can also be done using ant on the command line.
 
@@ -11,17 +11,54 @@ Building a project is then a simple matter of selecting it and double clicking t
 Antastic can be invoked without any arguments and then the gui will be started.
 It is also possible to run antastic in headless mode. When running headless, pass a list of jobs to run.
 
-A job can be defined as a project name, a project and a target separated by a colon or a file name.
-When a project name is specified, the default target for that project will be run.
-This is the default as defined in the ant.properties, not the default target in the build file.
+
+
+
+#h2 antastic cli
+
+To run the default targets for projects simply pass the name of the projects to antastic.
+The projects are run in the order in which they are declared.
+Example: to run the default targets for projects p1 and p2:
+
+`antastic p1 p2`
+
+You can specify a target for a project using a colon (example: run target t1 on project p1)
+
+`antastic p1:t1`
+
+Multiple targets are possible (example: run target t1 & t2 on project p1)
+
+`antastic p1:t1:t2`
+
+If an entry in the list has an equals sign '=', then it is evaluated as a property:
+
+`antastic p1:skip.test=true:t1`
+
+All properties are applied on all targets regardless of declaration order.
+It is also possible to specify global properties. 
+These apply to all jobs following the global property.
+So to have project p1 & p2 run with the skip.test property set to true:
+
+`antastic skip.test=true p1 p2`
+
+but in the following example:
+
+`antastic skip.checkstyle p1 skip.test=true p2`
+
+skip.test is set only for p2. skip.checkstyle is applied for both jobs
+
+Lastly, arguments that start with a slash '/' are special.
+These are references to files which will be run as antastic scripts:
+
+antastic /path/to/script
+
 In the case of a file, the file must exist and must be valid antastic script files.
 
-examples:
-	antastic myproject
-	antastic myproject:mytarget
-	antastic /path/to/script
 
-# Antastic scripting
+
+
+
+#h2 Antastic scripting
 The Antastic script format can be used to chain, building of multiple projects.
 Antastic will process the targets in sequence and stop if one of them fails.
 The format is as follows:

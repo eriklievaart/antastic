@@ -33,23 +33,13 @@ public class AntScript {
 		return this;
 	}
 
-	public AntScript queueProject(String projectName) {
-		WorkspaceProject project = workspace.getProjectByName(projectName);
-		for (String target : project.getProperty("target").trim().split("[, ]++")) {
-			jobs.add(new AntJob(project, config.getBuildFile(), target));
-		}
-		return this;
-	}
-
-	public AntScript queueTarget(String projectName, String target) {
-		WorkspaceProject project = workspace.getProjectByName(projectName);
-		jobs.add(new AntJob(project, config.getBuildFile(), target));
-		return this;
-	}
-
 	public AntScript queueRaw(String raw) {
 		jobs.addAll(parse(raw));
 		return this;
+	}
+
+	public AntJobBuilder buildJob(String project) {
+		return new AntJobBuilder(workspace.getProjectByName(project), config.getBuildFile(), jobs);
 	}
 
 	public List<AntJob> getAntJobs() {
@@ -79,7 +69,7 @@ public class AntScript {
 		return result;
 	}
 
-	public AntJob parseJob(String line) {
+	AntJob parseJob(String line) {
 		String[] split = line.trim().split("\\s++");
 		Check.isTrue(split.length == 2, "Expected [project] [target] got $", line);
 		WorkspaceProject project = workspace.getProjectByName(split[0]);

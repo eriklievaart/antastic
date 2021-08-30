@@ -1,7 +1,9 @@
 package com.eriklievaart.antastic.model;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import com.eriklievaart.antastic.ant.KeyValidator;
@@ -35,6 +37,10 @@ public class WorkspaceProject implements Comparable<WorkspaceProject> {
 	public String getProperty(String key) {
 		Optional<String> optional = location.getProperty(key);
 		return optional.orElseThrow(() -> new RuntimeIOException("property % not set for project %", key, getName()));
+	}
+
+	public List<String> getDefaultTargets() {
+		return Arrays.asList(getProperty("target").trim().split("[, ]++"));
 	}
 
 	@Override
