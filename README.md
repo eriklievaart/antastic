@@ -79,7 +79,7 @@ Scripts can be passed to the application in headless mode, but can also be creat
 Use the script menu item to create and run scripts interactively.
 
 ### ant home
-Antastic uses /usr/bin/ant by default. This can be overriden in the gui.
+Antastic uses `/usr/bin/ant` by default. This can be overriden in the gui.
 
 ### Config files
 * `/data/antastic.ini` => main config file containing build file, projects, groups
