@@ -9,7 +9,6 @@ import org.junit.Test;
 import com.eriklievaart.toolkit.lang.api.AssertionException;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.check.CheckCollection;
-import com.eriklievaart.toolkit.mock.BombSquad;
 
 public class CliParserU {
 
@@ -66,11 +65,9 @@ public class CliParserU {
 		});
 	}
 
-	@Test
+	@Test(expected = AssertionException.class)
 	public void parseGlobalInvalid() {
-		BombSquad.diffuse(AssertionException.class, "invalid arg", () -> {
-			CliParser parser = new CliParser("skip.test=true=error");
-			parser.ifIsGlobal((key, value) -> Assert.fail());
-		});
+		CliParser parser = new CliParser("skip.test=true=error");
+		parser.ifIsGlobal((key, value) -> Assert.fail());
 	}
 }
