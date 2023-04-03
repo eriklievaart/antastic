@@ -32,7 +32,7 @@ public class AntProcessBuilder {
 	private Map<String, String> properties = NewCollection.map();
 
 	public AntProcessBuilder(AntConfig ant, BuildFile buildFile, File projectRootDir) {
-		Check.notNull(buildFile, projectRootDir);
+		Check.noneNull(buildFile, projectRootDir);
 		this.executable = ant.getExecutable();
 		this.buildFile = buildFile;
 		this.projectRootDir = projectRootDir;

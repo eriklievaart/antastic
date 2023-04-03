@@ -22,7 +22,7 @@ public class BuildFile implements Comparable<BuildFile> {
 	private List<IniNode> filters;
 
 	public BuildFile(File location, List<IniNode> filters) {
-		Check.notNull(location, filters);
+		Check.noneNull(location, filters);
 		this.filters = filters;
 		if (!location.isFile()) {
 			log.warn("not a file: " + location.getAbsolutePath());
