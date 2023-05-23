@@ -23,22 +23,13 @@ import com.google.inject.Injector;
 public class Main {
 
 	public static void main(String[] args) throws Exception {
-		initLogging();
+		LogConfigFile.initFromDirectory(ApplicationPaths.getRunDir());
 
 		if (args.length == 0) {
 			runGui();
 		} else {
 			System.setProperty("antastic.headless", "true");
 			runScripts(args);
-		}
-	}
-
-	private static void initLogging() {
-		File file = ApplicationPaths.getLogConfigFile();
-		if (file.isFile()) {
-			LogConfigFile.load(file);
-		} else {
-			System.out.println("log config file does not exist! " + file);
 		}
 	}
 

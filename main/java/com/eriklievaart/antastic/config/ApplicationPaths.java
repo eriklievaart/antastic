@@ -3,7 +3,6 @@ package com.eriklievaart.antastic.config;
 import java.io.File;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.eriklievaart.antastic.boot.Main;
 import com.eriklievaart.toolkit.io.api.CheckFile;
 import com.eriklievaart.toolkit.io.api.JvmPaths;
 
@@ -42,9 +41,5 @@ public class ApplicationPaths {
 
 	public static File getAntConfigFile() {
 		return new File(JvmPaths.getJarDirOrClassDir(ApplicationPaths.class), "data/ant.txt");
-	}
-
-	public static File getLogConfigFile() {
-		return new File(JvmPaths.getJarDirOrRunDir(Main.class), "logging.ini");
 	}
 }
