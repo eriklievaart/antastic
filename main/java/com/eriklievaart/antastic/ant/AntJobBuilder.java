@@ -29,7 +29,7 @@ public class AntJobBuilder {
 		jobs.addAll(queue);
 	}
 
-	public void queueJob(CliJob cli, Map<String, String> properties) {
+	public void createAntJob(CliJob cli, Map<String, String> properties) {
 		Check.noneNull(cli.getProject(), cli.getTargets(), properties);
 		CheckCollection.notEmpty(cli.getTargets(), "no targets for job $", cli);
 		WorkspaceProject project = workspace.getProjectByName(cli.getProject());
