@@ -76,7 +76,7 @@ public class ScriptController {
 				if (text == null) {
 					JOptionPane.showMessageDialog(null, "No lines selected!");
 				} else {
-					runner.run(new AntScript(config, workspace).queueRaw(text));
+					runner.run(new AntScript(config, workspace).parse(text));
 				}
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(components.getJFrame(), "Exception in script: " + e.getMessage());

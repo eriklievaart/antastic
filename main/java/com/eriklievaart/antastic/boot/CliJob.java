@@ -33,7 +33,16 @@ public class CliJob {
 		properties.put(key, value);
 	}
 
+	public void putAll(Map<String, String> all) {
+		properties.putAll(all);
+	}
+
 	void addTarget(String target) {
 		targets.add(target);
+	}
+
+	@Override
+	public String toString() {
+		return project + targets + properties;
 	}
 }

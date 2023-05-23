@@ -22,7 +22,6 @@ public class CliParserU {
 
 			Check.isEqual(job.getProject(), "q");
 			CheckCollection.isEmpty(job.getTargets());
-			CheckCollection.isEmpty(job.getProperties());
 		});
 		Check.isTrue(called.get());
 	}
@@ -48,7 +47,7 @@ public class CliParserU {
 		CliParser parser = new CliParser("skip.test=true");
 
 		AtomicBoolean called = new AtomicBoolean(false);
-		parser.ifIsGlobal((key, value) -> {
+		parser.ifIsProperty((key, value) -> {
 			Check.isEqual(key, "skip.test");
 			Check.isEqual(value, "true");
 			called.set(true);
@@ -60,7 +59,7 @@ public class CliParserU {
 	public void parseGlobalNotAGlobal() {
 		CliParser parser = new CliParser("q:skip.test=true");
 
-		parser.ifIsGlobal((key, value) -> {
+		parser.ifIsProperty((key, value) -> {
 			Assert.fail();
 		});
 	}
@@ -68,6 +67,6 @@ public class CliParserU {
 	@Test(expected = AssertionException.class)
 	public void parseGlobalInvalid() {
 		CliParser parser = new CliParser("skip.test=true=error");
-		parser.ifIsGlobal((key, value) -> Assert.fail());
+		parser.ifIsProperty((key, value) -> Assert.fail());
 	}
 }

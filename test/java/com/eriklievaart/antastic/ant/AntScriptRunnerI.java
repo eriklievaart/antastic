@@ -9,7 +9,9 @@ import java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
+import com.eriklievaart.antastic.model.WorkspaceProjectManager;
 import com.eriklievaart.toolkit.io.api.CheckFile;
 import com.eriklievaart.toolkit.io.api.FileTool;
 import com.eriklievaart.toolkit.io.api.ResourceTool;
@@ -56,7 +58,7 @@ public class AntScriptRunnerI {
 		File file = getTestFile();
 		CheckFile.notExists(file);
 
-		runner.run(script.queueFile(getScriptThatCreatesFile()));
+		runner.run(script.parse(getScriptThatCreatesFile()));
 		checkEventually(() -> file.exists());
 	}
 
@@ -66,7 +68,7 @@ public class AntScriptRunnerI {
 		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
 		AntScript script = injector.getInstance(AntScript.class);
 
-		runner.run(script.queueFile(getScriptThatFails()));
+		runner.run(script.parse(getScriptThatFails()));
 		checkEventually(() -> runner.isDirty());
 	}
 
@@ -75,11 +77,15 @@ public class AntScriptRunnerI {
 		Injector injector = Guice.createInjector();
 		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
 		AntScript script = injector.getInstance(AntScript.class);
+		AntasticConfig config = injector.getInstance(AntasticConfig.class);
+		WorkspaceProjectManager workspace = injector.getInstance(WorkspaceProjectManager.class);
 
 		File fileCreatedBySecondTask = getTestFile();
 		CheckFile.notExists(fileCreatedBySecondTask);
 
-		runner.run(script.queueFile(getScriptThatFails()).queueFile(getScriptThatCreatesFile()));
+		AntJobBuilder builder = new AntJobBuilder(config, workspace);
+		builder.addAll(script.parse(getScriptThatFails()));
+		builder.addAll(script.parse(getScriptThatCreatesFile()));
 
 		checkEventually(() -> runner.isDirty());
 		waitUntil(() -> fileCreatedBySecondTask.exists());

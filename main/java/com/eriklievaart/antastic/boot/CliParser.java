@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import com.eriklievaart.toolkit.lang.api.check.Check;
+import com.eriklievaart.toolkit.lang.api.collection.Box2;
 
 public class CliParser {
 
@@ -38,8 +39,8 @@ public class CliParser {
 			String part = parts[i];
 
 			if (part.contains("=")) {
-				String[] keyValue = part.split("=");
-				job.put(keyValue[0], keyValue[1]);
+				Box2<String, String> property = parseProperty(part);
+				job.put(property.getKey(), property.getValue());
 			} else {
 				job.addTarget(part);
 			}
@@ -47,11 +48,16 @@ public class CliParser {
 		consumer.accept(job);
 	}
 
-	public void ifIsGlobal(BiConsumer<String, String> property) {
+	public void ifIsProperty(BiConsumer<String, String> consumer) {
 		if (!globalProperty) {
 			return;
 		}
+		Box2<String, String> property = parseProperty(raw);
+		consumer.accept(property.getKey(), property.getValue());
+	}
+
+	public static Box2<String, String> parseProperty(String raw) {
 		String[] keyValue = raw.split("=");
-		property.accept(keyValue[0], keyValue[1]);
+		return new Box2<>(keyValue[0].trim(), keyValue[1].trim());
 	}
 }

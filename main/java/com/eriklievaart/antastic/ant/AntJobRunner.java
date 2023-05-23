@@ -17,11 +17,8 @@ public class AntJobRunner {
 	@Inject
 	private AntConfig ant;
 
-	public void run(AntScript script) throws Exception {
-		run(script.getAntJobs());
-	}
-
 	public void run(List<AntJob> jobs) throws Exception {
+		jobs.forEach(job -> log.info("queued job: $$", job, job.getProperties()));
 		AntScheduler.schedule(() -> {
 			AntScheduler.DIRTY.set(false);
 
