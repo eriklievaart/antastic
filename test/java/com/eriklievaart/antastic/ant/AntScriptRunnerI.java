@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.eriklievaart.antastic.boot.cli.JobMetadata;
 import com.eriklievaart.antastic.config.AntasticConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.model.WorkspaceProjectManager;
@@ -83,7 +84,7 @@ public class AntScriptRunnerI {
 		File fileCreatedBySecondTask = getTestFile();
 		CheckFile.notExists(fileCreatedBySecondTask);
 
-		AntJobBuilder builder = new AntJobBuilder(config, workspace);
+		AntJobBuilder builder = new AntJobBuilder(new JobMetadata(config, workspace));
 		builder.addAll(script.parse(getScriptThatFails()));
 		builder.addAll(script.parse(getScriptThatCreatesFile()));
 

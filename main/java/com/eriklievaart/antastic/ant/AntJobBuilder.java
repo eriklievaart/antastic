@@ -4,25 +4,23 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.eriklievaart.antastic.boot.CliJob;
-import com.eriklievaart.antastic.config.AntasticConfig;
-import com.eriklievaart.antastic.model.WorkspaceProject;
-import com.eriklievaart.antastic.model.WorkspaceProjectManager;
+import com.eriklievaart.antastic.boot.cli.CliJob;
+import com.eriklievaart.antastic.boot.cli.JobMetadataI;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.check.CheckCollection;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class AntJobBuilder {
 
-	private final AntasticConfig config;
-	private final WorkspaceProjectManager workspace;
+	private JobMetadataI metadata;
 	private List<AntJob> jobs = NewCollection.list();
 
 	@Inject
-	public AntJobBuilder(AntasticConfig config, WorkspaceProjectManager workspace) {
-		this.config = config;
-		this.workspace = workspace;
+	public AntJobBuilder(JobMetadataI metadata) {
+		this.metadata = metadata;
 	}
 
 	public void addAll(List<AntJob> queue) {
@@ -32,10 +30,9 @@ public class AntJobBuilder {
 	public void createAntJob(CliJob cli, Map<String, String> properties) {
 		Check.noneNull(cli.getProject(), cli.getTargets(), properties);
 		CheckCollection.notEmpty(cli.getTargets(), "no targets for job $", cli);
-		WorkspaceProject project = workspace.getProjectByName(cli.getProject());
 
 		for (String target : cli.getTargets()) {
-			AntJob job = new AntJob(project, config.getBuildFile(), target);
+			AntJob job = new AntJob(metadata.getProject(cli.getProject()), metadata.getBuildFile(), target);
 			job.putAll(properties);
 			job.putAll(cli.getProperties());
 			jobs.add(job);
@@ -43,7 +40,7 @@ public class AntJobBuilder {
 	}
 
 	public List<String> getPreconfiguredArgs(String project) {
-		return workspace.getProjectByName(project).getDefaultTargets();
+		return metadata.getProject(project).getDefaultTargets();
 	}
 
 	public List<AntJob> getJobs() {

@@ -1,7 +1,12 @@
 package com.eriklievaart.antastic.boot;
 
+import java.io.File;
+
+import com.eriklievaart.antastic.ant.AntJobBuilder;
 import com.eriklievaart.antastic.ant.AntJobRunner;
 import com.eriklievaart.antastic.ant.AntScheduler;
+import com.eriklievaart.antastic.ant.AntScript;
+import com.eriklievaart.antastic.boot.cli.JobParser;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.ui.main.MainController;
 import com.eriklievaart.toolkit.logging.api.LogConfigFile;
@@ -28,8 +33,17 @@ public class Main {
 		Injector injector = Guice.createInjector();
 		JobParser parser = injector.getInstance(JobParser.class);
 		AntJobRunner runner = injector.getInstance(AntJobRunner.class);
+		AntJobBuilder builder = injector.getInstance(AntJobBuilder.class);
+		AntScript script = injector.getInstance(AntScript.class);
 
-		runner.run(parser.createAntJobs(args));
+		for (String arg : args) {
+			if (arg.contains("/") || arg.contains("\\")) {
+				builder.addAll(script.parse(new File(arg)));
+			} else {
+				parser.createAntJobs(arg);
+			}
+		}
+		runner.run(builder.getJobs());
 		AntScheduler.awaitTermination();
 		System.exit(runner.isDirty() ? 101 : 0);
 	}

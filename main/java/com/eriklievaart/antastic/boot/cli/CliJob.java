@@ -1,4 +1,4 @@
-package com.eriklievaart.antastic.boot;
+package com.eriklievaart.antastic.boot.cli;
 
 import java.util.Collections;
 import java.util.Hashtable;

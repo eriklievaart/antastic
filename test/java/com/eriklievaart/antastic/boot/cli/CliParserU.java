@@ -1,4 +1,4 @@
-package com.eriklievaart.antastic.boot;
+package com.eriklievaart.antastic.boot.cli;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.eriklievaart.antastic.boot.cli.CliParser;
 import com.eriklievaart.toolkit.lang.api.AssertionException;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.check.CheckCollection;

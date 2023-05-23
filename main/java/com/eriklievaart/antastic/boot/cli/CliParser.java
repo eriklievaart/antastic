@@ -1,4 +1,4 @@
-package com.eriklievaart.antastic.boot;
+package com.eriklievaart.antastic.boot.cli;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
