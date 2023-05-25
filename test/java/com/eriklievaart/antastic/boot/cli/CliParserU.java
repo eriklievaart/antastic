@@ -29,14 +29,14 @@ public class CliParserU {
 
 	@Test
 	public void parseJobComplex() {
-		CliParser parser = new CliParser("q:skip.test=true:skip.checkstyle=true:master-osgi-deploy:master-clean");
+		CliParser parser = new CliParser("q:skip.test=true:skip.checkstyle=true:osgi-deploy:clean");
 
 		AtomicBoolean called = new AtomicBoolean(false);
 		parser.ifIsJob((job) -> {
 			called.set(true);
 
 			Check.isEqual(job.getProject(), "q");
-			Check.isEqual(job.getTargets(), Arrays.asList("master-osgi-deploy", "master-clean"));
+			Check.isEqual(job.getTargets(), Arrays.asList("osgi-deploy", "clean"));
 			Check.isEqual(job.getProperties().get("skip.test"), "true");
 			Check.isEqual(job.getProperties().get("skip.checkstyle"), "true");
 		});
