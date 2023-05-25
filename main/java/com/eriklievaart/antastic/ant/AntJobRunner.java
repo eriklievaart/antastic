@@ -51,9 +51,9 @@ public class AntJobRunner {
 
 	private void printBanner(AntJob job) {
 		String info = Str.sub("## $ ##", job);
-		log.info(Str.repeat("#", info.length()));
-		log.info(info);
-		log.info(Str.repeat("#", info.length()));
+		System.out.println(Str.repeat("#", info.length()));
+		System.out.println(info);
+		System.out.println(Str.repeat("#", info.length()));
 	}
 
 	public boolean isDirty() {

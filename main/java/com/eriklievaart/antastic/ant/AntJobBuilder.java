@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.eriklievaart.antastic.boot.cli.CliJob;
 import com.eriklievaart.antastic.boot.cli.JobMetadataI;
+import com.eriklievaart.toolkit.lang.api.ToString;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.check.CheckCollection;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
@@ -43,7 +44,16 @@ public class AntJobBuilder {
 		return metadata.getProject(project).getDefaultTargets();
 	}
 
+	public List<String> getAnnotatedArgs(String project) {
+		return metadata.getProject(project).getAnnotatedTargets();
+	}
+
 	public List<AntJob> getJobs() {
 		return Collections.unmodifiableList(jobs);
+	}
+
+	@Override
+	public String toString() {
+		return ToString.simple(this, "$$", jobs);
 	}
 }

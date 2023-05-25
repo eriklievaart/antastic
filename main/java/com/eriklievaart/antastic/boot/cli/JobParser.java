@@ -1,6 +1,7 @@
 package com.eriklievaart.antastic.boot.cli;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import com.eriklievaart.antastic.ant.AntJobBuilder;
@@ -24,18 +25,28 @@ public class JobParser {
 	}
 
 	private void createJob(CliJob cli) {
-		if (cli.getTargets().isEmpty()) {
+		if (cli.isAnnotated()) {
+			createAnnotatedJob(cli);
+		} else if (cli.getTargets().isEmpty()) {
 			createJobFromDefaultArgs(cli);
 		} else {
 			builder.createAntJob(cli, globals);
 		}
 	}
 
+	private void createAnnotatedJob(CliJob cli) {
+		createJobFromArgs(cli, builder.getAnnotatedArgs(cli.getProject()));
+	}
+
 	private void createJobFromDefaultArgs(CliJob cli) {
+		createJobFromArgs(cli, builder.getPreconfiguredArgs(cli.getProject()));
+	}
+
+	private void createJobFromArgs(CliJob cli, List<String> args) {
 		Map<String, String> properties = new Hashtable<>(globals);
 		properties.putAll(cli.getProperties());
 
-		for (String arg : builder.getPreconfiguredArgs(cli.getProject())) {
+		for (String arg : args) {
 
 			if (arg.contains("=") && !arg.contains(":")) {
 				CliParser.parseProperty(arg).addToMap(properties);

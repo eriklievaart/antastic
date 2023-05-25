@@ -12,7 +12,9 @@ import com.eriklievaart.antastic.config.AntConfig;
 import com.eriklievaart.antastic.config.ApplicationPaths;
 import com.eriklievaart.antastic.model.BuildFile;
 import com.eriklievaart.toolkit.io.api.RuntimeIOException;
+import com.eriklievaart.toolkit.lang.api.ToString;
 import com.eriklievaart.toolkit.lang.api.check.Check;
+import com.eriklievaart.toolkit.lang.api.collection.ListTool;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
 import com.eriklievaart.toolkit.logging.api.LogTemplate;
 
@@ -51,10 +53,10 @@ public class AntProcessBuilder {
 	public Process runTarget(String target) {
 		try {
 			Check.isTrue(isAntAvailable(), "Ant home dir not set!");
-			log.info("runnning target: $ of build file $ for project $ ", target, buildFile.getFile(), projectRootDir);
-            if(!projectRootDir.exists()) {
-                projectRootDir.mkdirs();
-            }
+			info("runnning target: $ of build file $ for project $ ", target, buildFile.getFile(), projectRootDir);
+			if (!projectRootDir.exists()) {
+				projectRootDir.mkdirs();
+			}
 
 			ProcessBuilder builder = new ProcessBuilder(createCommandLineArguments(target));
 			builder.directory(new File(projectRootDir.getAbsolutePath()));
@@ -88,8 +90,12 @@ public class AntProcessBuilder {
 			builder.addPropertyFile(ApplicationPaths.getGlobalsFile());
 		}
 
-		log.debug("native command: $", builder);
+		info("native command: $", builder);
 		return builder.toArray();
+	}
+
+	private void info(String format, Object... args) {
+		log.info(format, ListTool.map(args, o -> ToString.object(o).replaceAll("/home/[^/ \t]++/", "~/")).toArray());
 	}
 
 	private void addExecutable(AntCommandBuilder builder) {

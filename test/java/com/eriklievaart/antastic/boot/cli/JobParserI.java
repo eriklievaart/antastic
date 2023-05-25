@@ -138,4 +138,16 @@ public class JobParserI {
 		fixture.expectations.expectJob("umbreon", "dodge").prop("global", "CO2");
 		fixture.expectations.verify();
 	}
+
+	@Test
+	public void createAntJobsResolve() {
+		JobParserFixture fixture = new JobParserFixture();
+		fixture.metadata.setConfiguredArgs("pikachu", "shock");
+		fixture.metadata.setConfiguredArgs("umbreon", "dodge");
+		fixture.metadata.setAnnotatedArgs("umbreon", "resolve");
+		fixture.createAntJobs("pikachu", "@umbreon");
+		fixture.expectations.expectJob("pikachu", "shock");
+		fixture.expectations.expectJob("umbreon", "resolve");
+		fixture.expectations.verify();
+	}
 }

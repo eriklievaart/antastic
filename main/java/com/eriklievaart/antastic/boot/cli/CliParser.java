@@ -22,7 +22,9 @@ public class CliParser {
 			globalProperty = true;
 		}
 		for (String part : raw.split(":")) {
-			Check.matches(part, "[a-zA-Z0-9._-]++(=[a-zA-Z0-9._-]++)?", "invalid arg $", raw);
+			if (!part.matches("@[a-zA-Z-]++")) {
+				Check.matches(part, "[a-zA-Z0-9._-]++(=[a-zA-Z0-9._-]++)?", "invalid arg $", raw);
+			}
 		}
 	}
 
@@ -34,7 +36,7 @@ public class CliParser {
 		String[] parts = raw.split(":++");
 		Check.isFalse(parts[0].contains("="), "invalid arg $ => expecting project name", parts[0]);
 
-		CliJob job = new CliJob(parts[0]);
+		CliJob job = new CliJob(parts[0].replaceFirst("^@", ""), parts[0].startsWith("@"));
 		for (int i = 1; i < parts.length; i++) {
 			String part = parts[i];
 

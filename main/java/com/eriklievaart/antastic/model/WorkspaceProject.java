@@ -43,6 +43,10 @@ public class WorkspaceProject implements Comparable<WorkspaceProject> {
 		return Arrays.asList(getProperty("target").trim().split("[, ]++"));
 	}
 
+	public List<String> getAnnotatedTargets() {
+		return Arrays.asList(getProperty("annotated").trim().split("[, ]++"));
+	}
+
 	@Override
 	public String toString() {
 		return location.getName();

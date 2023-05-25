@@ -12,6 +12,7 @@ import com.eriklievaart.antastic.ant.AntJobBuilder;
 import com.eriklievaart.toolkit.lang.api.check.Check;
 import com.eriklievaart.toolkit.lang.api.collection.ListTool;
 import com.eriklievaart.toolkit.lang.api.collection.NewCollection;
+import com.eriklievaart.toolkit.lang.api.str.Str;
 
 public class CliExpectations {
 
@@ -34,7 +35,7 @@ public class CliExpectations {
 	}
 
 	private Map<String, AntJob> createCallMap() {
-		Map<String, AntJob> map = NewCollection.map();
+		Map<String, AntJob> map = NewCollection.orderedMap();
 		builder.getJobs().forEach(job -> {
 			map.put(job.getProject().getName() + ":" + job.getTarget(), job);
 		});
@@ -70,5 +71,15 @@ public class CliExpectations {
 		public void prop(String key, String value) {
 			properties.put(key, value);
 		}
+
+		@Override
+		public String toString() {
+			return Str.sub("[$:$]$", jobName, target, properties);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return expectations.toString();
 	}
 }
